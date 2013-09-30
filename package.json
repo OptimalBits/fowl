@@ -1,0 +1,21 @@
+{
+  "name": "fowl",
+  "version": "0.0.1",
+  "description": "Document Model and Query Layer for FoundationDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+    "foundationdb",
+    "object-modelling",
+    "query"
+  ],
+  "author": "Manuel Astudillo",
+  "license": "BSD",
+  "dependencies": {
+    "fdb": "~1.0.1",
+    "when": "~2.4.0"
+  }
+}
