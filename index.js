@@ -2,7 +2,7 @@
 
 var fdb = require('fdb').apiVersion(100);
 var Transaction = require('./lib/transaction');
-var query = require('./lib/query');
+//var query = require('./lib/query');
 var _ = require('lodash');
 
 var db;
