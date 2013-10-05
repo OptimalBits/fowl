@@ -1,12 +1,12 @@
 {
   "name": "fowl",
   "version": "0.0.1",
-  "description": "Document Model and Query Layer for FoundationDB",
+  "description": "Document and Query Layer for FoundationDB",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/ --reporter spec"
   },
-  "repository": "",
+  "repository": "git://github.com/optimalbits/fowl.git",
   "keywords": [
     "foundationdb",
     "object-modelling",
@@ -16,6 +16,13 @@
   "license": "BSD",
   "dependencies": {
     "fdb": "~1.0.1",
-    "when": "~2.4.0"
+    "when": "~2.4.0",
+    "node-uuid": "~1.4.1"
+  },
+  "devDependencies": {
+    "mocha": "~1.13.0",
+    "benchmark": "~1.0.0",
+    "microtime": "~0.4.0",
+    "chai": "~1.8.0"
   }
 }
