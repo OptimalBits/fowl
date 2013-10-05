@@ -1,6 +1,6 @@
 "use strict";
 
-var fowl = require('../');
+var fowl = require('../index');
 var chai = require('chai');
 
 var expect = chai.expect;
@@ -91,6 +91,25 @@ describe("Basic operations", function(){
       expect(lisa.balance).to.be.equal(40);
       done();
     })
+  })
+  it("An stored array should be read as an array", function(done){
+    var tr = fowl.transaction();
+    
+    tr.create('tests', {
+      _id: 'array', 
+      cars: ['lotus', 'ferrari', 'red bull', 'mercedes', 'renault']});
+      
+    tr.get(['tests', 'array', 'cars']).then(function(cars){
+      expect(cars).to.have.length(5);
+      expect(cars[0]).to.be.equal('lotus');
+      expect(cars[1]).to.be.equal('ferrari');
+      expect(cars[2]).to.be.equal('red bull');
+      expect(cars[3]).to.be.equal('mercedes');
+      expect(cars[4]).to.be.equal('renault');
+      done();
+    });
+    
+    tr.commit();
   })
   
   it("Find by filtering some property", function(done){
