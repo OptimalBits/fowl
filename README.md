@@ -69,18 +69,18 @@ var lisa = fowl.create('people', {
 // Use transactions to transfer money from one account to another
 var tr = fowl.transaction()
 
-tr.get(['people', 1, 'balance']).then(function(johnBalance){
-  tr.put(['people', 1, 'balance'], johnBalance - 10);
+tr.get(['people', 'john', 'balance']).then(function(johnBalance){
+  tr.put(['people', 'john', 'balance'], johnBalance - 10);
 });
 
-tr.get(['people', 2, 'balance']).then(function(lisaBalance){
-  tr.put(['people', 2, 'balance'], lisaBalance + 10);
+tr.get(['people', 'lisa', 'balance']).then(function(lisaBalance){
+  tr.put(['people','lisa', 'balance'], lisaBalance + 10);
 })
 
 tr.commit();
 
 fowl.find('people', {balance: 90}, ['lastname']).then(function(docs){
-  // docs = [{lastname: 'Jones', lastname: 'Smith'}]
+  // docs = [{lastname: 'Jones'}, {lastname: 'Smith'}]
 })
 
 ```
@@ -98,7 +98,7 @@ spawning multiple documents.
 
 Key paths are used in fowl to represent the location of some document or 
 subdocument. It is just an array of strings (or numbers) that maps to a 
-key or key range inside foundation db base. 
+key or key range inside FoundationDB.
 Key paths are more flexible than bucket based collections, as used for example
 in mongoDB, since it allows you to specify a document or subdocument in a 
 generic way.
@@ -124,7 +124,7 @@ be converted to an array:
 ## About  the _id property
 
 As in MongoDB, we generate a unique *_id* property for all the created documents.
-This property can be overrided by providing it explictly in the document object.
+This property can be overrided by providing it explicitly in the document object.
 
 It is also possible not using _id at all by just using the put method directly
 and never calling create.
@@ -228,7 +228,8 @@ __Arguments__
 <a name="transaction"/>
 ### transaction()
 
-Creates a new transaction. A transaction is an object that provides methodsto access the database as an atomic operation.
+Creates a new transaction. A transaction is an object that provides methods 
+to access the database as an atomic operation.
 
 
 ---------------------------------------
