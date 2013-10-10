@@ -31,7 +31,6 @@ npm test
 - Access of documents and subdocuments seamless due to a keypath based design.
 
 ##Roadmap
-- Field indexes
 - Advanced queries (implement all mongodb query operators)
 - Query results as streams
 
@@ -44,6 +43,7 @@ npm test
 * [remove](#remove)
 * [find](#remove)
 * [transaction](#transaction)
+* [addIndex](#addindex)
 
 ##Example
 
@@ -282,6 +282,22 @@ A transactional equivalent to [fowl##remove](#remove)
 
 A transactional equivalent to [fowl##find](#find)
 
+<a name="addIndex"/>
+### addIndex(keyPath, fields)
+
+Adds an index for the given key path and fields. After calling this method,
+everytime the key paths with the given fields are updated, an index is also
+updated so that queries on such fields can be performed much faster.
+
+__Arguments__
+ 
+```javascript
+  keyPath {Array|String} base key path for the index.
+  fields {String|Array} A field or array of fields to index.
+  returns {Promise} A promise that resolves after the index has been added.
+```
+
+---------------------------------------
 
 ##License 
 
