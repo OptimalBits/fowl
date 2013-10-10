@@ -31,8 +31,9 @@ npm test
 - Access of documents and subdocuments seamless due to a keypath based design.
 
 ##Roadmap
-- Indexes
-- Advanced queries
+- Field indexes
+- Advanced queries (implement all mongodb query operators)
+- Query results as streams
 
 ##Documentation
 
@@ -77,13 +78,24 @@ tr.get(['people', 'lisa', 'balance']).then(function(lisaBalance){
   tr.put(['people','lisa', 'balance'], lisaBalance + 10);
 })
 
-tr.commit();
-
-fowl.find('people', {balance: 90}, ['lastname']).then(function(docs){
-  // docs = [{lastname: 'Jones'}, {lastname: 'Smith'}]
+tr.commit().then(function(){
+  // We need to wait for the commit to complete since we are finding the
+  // same keypaths.
+  
+  fowl.find('people', {balance: 90}, ['lastname']).then(function(docs){
+    // docs = [{lastname: 'Jones'}, {lastname: 'Smith'}]
+  })
 })
+```
+
+In order to accelerate queries you should use indexes on the most common
+fields in a document. Just add indexes specifying a base key path and the
+fields to index:
 
 ```
+fowl.addIndex('people',  ['name', 'balance']);
+```
+
 
 ## About atomicity
 
@@ -123,11 +135,14 @@ be converted to an array:
 
 ## About  the _id property
 
-As in MongoDB, we generate a unique *_id* property for all the created documents.
-This property can be overrided by providing it explicitly in the document object.
+As in MongoDB, we generate a unique *_id* property as a primary key for all the 
+created documents.
 
-It is also possible not using _id at all by just using the put method directly
-and never calling create.
+This property can be overrided if required by providing it explicitly in the
+document object.
+
+It is also possible skip the use of the *_id* property by just using the put 
+method directly and never calling create.
 
 ## Methods
 

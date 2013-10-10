@@ -5,9 +5,31 @@ var chai = require('chai');
 
 var expect = chai.expect;
 
+var root = '__tests__';
+
 fowl.open();
 
 describe("Basic operations", function(){
+  
+  before(function(done){
+    fowl.remove('animals');
+    fowl.remove('people');
+    fowl.remove('tests').then(function(){
+      done();
+    });
+  });
+  
+  after(function(done){
+    var tr = fowl.transaction();
+    tr.remove('animals');
+    tr.remove('people');
+    tr.remove(root);
+    tr.remove(['__ind', root]);
+    tr.commit().then(function(){
+        done();
+    })
+  });
+  
   it("Create document", function(done){
     var tr = fowl.transaction();
 
@@ -81,25 +103,26 @@ describe("Basic operations", function(){
       tr.put(['people', 2], {balance: lisa.balance});
     });
     
-    tr.commit();
-
-    fowl.get(['people', 1]).then(function(john){
-      expect(john.balance).to.be.equal(40);
-    })
+    tr.commit().then(function(){
+      fowl.get(['people', 1]).then(function(john){
+        expect(john.balance).to.be.equal(40);
+      })
     
-    fowl.get(['people', 2]).then(function(lisa){
-      expect(lisa.balance).to.be.equal(40);
-      done();
+      fowl.get(['people', 2]).then(function(lisa){
+        expect(lisa.balance).to.be.equal(40);
+        done();
+      })
     })
   })
+  
   it("An stored array should be read as an array", function(done){
     var tr = fowl.transaction();
     
-    tr.create('tests', {
+    tr.create(root, {
       _id: 'array', 
       cars: ['lotus', 'ferrari', 'red bull', 'mercedes', 'renault']});
       
-    tr.get(['tests', 'array', 'cars']).then(function(cars){
+    tr.get([root, 'array', 'cars']).then(function(cars){
       expect(cars).to.have.length(5);
       expect(cars[0]).to.be.equal('lotus');
       expect(cars[1]).to.be.equal('ferrari');
@@ -124,8 +147,30 @@ describe("Basic operations", function(){
   
     tr.commit().then(function(){
       done();
+    });
+  });
+  
+  it("Find using an indexed property", function(done){
+    var keyPath = [root, 'people'];
+    
+    fowl.addIndex(keyPath, 'name').then(function(){
+      var tr = fowl.transaction();
+    
+      tr.create(keyPath, { name: "John", lastname: "Smith", balance: 50});
+      tr.create(keyPath, { name: "Lisa", balance: 30});
+  
+      tr.find(keyPath, {name: "John"}, ['name', 'balance']).then(function(result){
+        expect(result).to.be.a("array");
+        expect(result.length).to.be.equal(1);
+        expect(result[0].name).to.be.equal('John')
+      });
+          
+      tr.commit().then(function(){
+        done();
+      })
     })
-  })
+    
+  });
  
 });
 
