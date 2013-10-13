@@ -6,7 +6,6 @@ var _ = require('lodash');
 var indexes = require('./lib/indexes');
 var Transaction = require('./lib/transaction');
 
-
 //
 // Globals
 //
@@ -81,5 +80,12 @@ exports.remove = function(keyPath){
   var tr = transaction();
   var res = tr.remove(keyPath);
   return tr.commit();
+}
+
+exports.find = function(keyPath, where, fields, options){
+  var tr = transaction();
+  var res = tr.find(keyPath, where, fields, options);
+  tr.commit();
+  return res;
 }
 
