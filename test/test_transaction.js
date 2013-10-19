@@ -241,85 +241,103 @@ describe("Transactions", function(){
   });
   
   describe("Queries", function(){
-    it("Find by filtering some property", function(done){
-      var tr = fowl.transaction();
-    
-      tr.create([root, 'people'], { name: "John", lastname: "Smith", balance: 50});
-      tr.create([root, 'people'], { name: "Lisa", balance: 30});
-  
-      tr.find([root, 'people'], {name: "John"}, ['name']).then(function(result){
-        expect(result).to.be.an(Array);
-      });
-  
-      tr.commit().then(function(){
-        done();
-      });
-    });
-    
-    it("Find one between many documents by filtering some property", function(done){
-      var tr = fowl.transaction();
-    
-      //
-      // Add many documents
-      //
-      tr.create([root, 'people'], { name: "Peter", balance: 30});
-      tr.create([root, 'people'], { name: "Peter", balance: 45});
-      
-      for(var i=0; i< 1000; i++){
-        tr.create([root, 'people'], { id: i, name: "John", lastname: "Smith", balance: Math.random()});
-      }
-      
-      tr.commit().then(function(){
-        //
-        // Lets find Lisa
-        //
+    describe("Equality condition", function(){
+      it("Find by filtering some property", function(done){
         var tr = fowl.transaction();
-      
-        tr.find([root, 'people'], {name: "Peter", balance: 30}, ['name', 'balance']).then(function(result){
-          expect(result).to.be.a("array");
-          expect(result).to.have.length(1);
-          expect(result[0]).to.have.property('balance');
-          expect(result[0].balance).to.be.equal(30);
-          expect(result[0]).to.have.property('name');
-          expect(result[0].name).to.be.equal("Peter");
-          done();
-        }, function(err){
-          console.log(err);
+    
+        tr.create([root, 'people'], { name: "John", lastname: "Smith", balance: 50});
+        tr.create([root, 'people'], { name: "Lisa", balance: 30});
+  
+        tr.find([root, 'people'], {name: "John"}, ['name']).then(function(result){
+          expect(result).to.be.an(Array);
         });
   
-        tr.commit();
+        tr.commit().then(function(){
+          done();
+        });
       });
-      
-    });
-  
-    it("Find one between many documents using an indexed property", function(done){
-      var keyPath = [root, 'indexedpeople'];
     
-      fowl.addIndex(keyPath, 'name').then(function(){
+      it("Find one between many documents by filtering some property", function(done){
         var tr = fowl.transaction();
-        
+    
         //
         // Add many documents
         //
-        tr.create(keyPath, { name: "Peter", balance: 30});
+        tr.create([root, 'people'], { name: "Peter", balance: 30});
+        tr.create([root, 'people'], { name: "Peter", balance: 45});
       
         for(var i=0; i< 1000; i++){
-          tr.create(keyPath, { id: i, name: "John", lastname: "Smith", balance: Math.random()});
+          tr.create([root, 'people'], { id: i, name: "John", lastname: "Smith", balance: Math.random()});
         }
-        
-        tr.find(keyPath, {name: "Peter"}, ['name', 'balance']).then(function(result){
-          expect(result).to.be.a("array");
-          expect(result).to.have.length(1);
-          expect(result[0]).to.have.property('balance');
-          expect(result[0].balance).to.be.equal(30);
-          expect(result[0]).to.have.property('name');
-          expect(result[0].name).to.be.equal("Peter");
-          done();
+      
+        tr.commit().then(function(){
+          //
+          // Lets find Lisa
+          //
+          var tr = fowl.transaction();
+      
+          tr.find([root, 'people'], {name: "Peter", balance: 30}, ['name', 'balance']).then(function(result){
+            expect(result).to.be.a("array");
+            expect(result).to.have.length(1);
+            expect(result[0]).to.have.property('balance');
+            expect(result[0].balance).to.be.equal(30);
+            expect(result[0]).to.have.property('name');
+            expect(result[0].name).to.be.equal("Peter");
+            done();
+          }, function(err){
+            console.log(err);
+          });
+  
+          tr.commit();
         });
-          
-        tr.commit();
-      })
+      });
+        
+      it("Find by specifying AND conditions");
+      it("Find by specifying OR conditions");
+      it("Find by specifying AND and OR conditions");
+      
+      it("Find by specifying a subdocument");
+      
+      it("Find by exact match on array { tags: [ 'fruit', 'food', 'citrus' ]");
+      it("Find by matching one array element {tags: 'fruit' }");
+  
+      it("Find one between many documents using an indexed property", function(done){
+        var keyPath = [root, 'indexedpeople'];
     
+        fowl.addIndex(keyPath, 'name').then(function(){
+          var tr = fowl.transaction();
+        
+          //
+          // Add many documents
+          //
+          tr.create(keyPath, { name: "Peter", balance: 30});
+      
+          for(var i=0; i< 1000; i++){
+            tr.create(keyPath, { id: i, name: "John", lastname: "Smith", balance: Math.random()});
+          }
+        
+          tr.find(keyPath, {name: "Peter"}, ['name', 'balance']).then(function(result){
+            expect(result).to.be.a("array");
+            expect(result).to.have.length(1);
+            expect(result[0]).to.have.property('balance');
+            expect(result[0].balance).to.be.equal(30);
+            expect(result[0]).to.have.property('name');
+            expect(result[0].name).to.be.equal("Peter");
+            done();
+          });
+          
+          tr.commit();
+        })
+      });
+    });
+    
+    describe("Condition Operators", function(){
+      it("Greater than ($gt)");
+      it("Greater and equal than ($gte)");
+      it("Less than ($lt)");
+      it("Less and equal than ($lte)");
+      it("Not equal ($ne)");
+      it("Not in ($nin)");
     });
   });
   
