@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 var indexes = require('./lib/indexes');
 var Transaction = require('./lib/transaction');
+var Query = require('./lib/query');
 
 //
 // Globals
@@ -14,6 +15,10 @@ var indexMeta = {};
 
 function transaction(){
   return new Transaction(fdb, db, indexMeta);
+}
+
+function query(keyPath, fields, opts){
+  return new Query(keyPath, fields, opts)
 }
 
 exports.open = function(clusterFile, dbName)
@@ -29,6 +34,7 @@ exports.open = function(clusterFile, dbName)
 
 exports.options = fdb.options;
 exports.transaction = transaction;
+exports.query = query;
 
 /**
   Add a index
