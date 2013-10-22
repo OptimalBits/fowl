@@ -1,8 +1,8 @@
 #Fowl - NodeJS Document and Query Layer for FDB
 
 A NodeJS Layer for FoundationDB that provides documents and queries
-with similar capabilities as MongoDB plus transaction
-support.
+with similar capabilities to MongoDB but providing support for 
+multidocument transactions.
 
 Transaction support is an incredile powerful feature that simplifies
 server logic and helps avoiding difficult to solve race conditions.
@@ -10,7 +10,15 @@ server logic and helps avoiding difficult to solve race conditions.
 Fowl provides a low level API based on keypaths for describing documents and its
 properties following CRUD semantics.
 
+Fowl aims to be a low level document layer that can be used by other to provide
+higher level features such as schemas, models, validation, etc.
+
 All asynchronous operations return A+ compliant promises (provided by whenjs).
+
+##Contribute
+
+Do you like Fowl and want to bring it up to the next level? Do not hesitate to
+clone the project and start contributing to it! :)
 
 ##Install
 
@@ -32,7 +40,8 @@ npm test
 
 ##Roadmap
 - Advanced queries (implement all mongodb query operators)
-- Query results as streams
+- Joins
+- Profile and optimize
 
 ##Documentation
 
