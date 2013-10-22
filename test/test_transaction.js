@@ -12,6 +12,7 @@ fowl.open();
 describe("Transactions", function(){
   
   before(function(done){
+    fowl.remove('__ind');
     fowl.remove(root);
     fowl.remove('animals');
     fowl.remove('people');
@@ -332,10 +333,188 @@ describe("Transactions", function(){
     });
     
     describe("Condition Operators", function(){
-      it("Greater than ($gt)");
-      it("Greater and equal than ($gte)");
-      it("Less than ($lt)");
-      it("Less and equal than ($lte)");
+      it("equality operator", function(done){
+        var keyPath = [root, 'people'];
+        
+        var tr = fowl.transaction();
+
+        //
+        // Add many documents
+        //
+        tr.create(keyPath, { name: "Josh", balance: 30});
+        tr.create(keyPath, { name: "Josh", balance: 45});
+
+        for(var i=0; i< 50; i++){
+          tr.create(keyPath, { 
+            _id: i, 
+            name: "John", 
+            lastname: "Smith", 
+            balance: Math.round(Math.random()*100)});
+          }
+
+        tr.commit().then(function(){
+          var time = Date.now();
+          var tr = fowl.transaction();
+            
+          var query = fowl.query(keyPath);
+
+          query
+            .eql('name', 'Josh')
+            .eql('balance', 30)
+
+          query.exec(tr).then(function(docs){
+            expect(docs).to.have.length(1)
+            expect(docs[0]).to.have.property('name', 'Josh');
+            expect(docs[0]).to.have.property('balance', 30);
+            done();
+          }, function(err){
+            done(err);
+            console.log(err);
+          });
+  
+          tr.commit();
+        });
+      });
+        
+      it("equality operator using index", function(done){
+        var keyPath = [root, 'eqlindex', 'people'];
+  
+        fowl.addIndex(keyPath, 'balance').then(function(){
+  
+          var tr = fowl.transaction();
+
+          //
+          // Add many documents
+          //
+          tr.create(keyPath, { name: "Josh", balance: 30});
+          tr.create(keyPath, { name: "Josh", balance: 45});
+
+          for(var i=0; i< 50; i++){
+            tr.create(keyPath, { 
+              _id: i, 
+              name: "John", 
+              lastname: "Smith", 
+              balance: Math.round(Math.random()*100)
+            });
+          }
+
+          tr.commit().then(function(){
+            var time = Date.now();
+            var tr = fowl.transaction();
+            
+            var query = fowl.query(keyPath);
+
+            query
+              .eql('balance', 30)
+              .eql('name', 'Josh')
+                
+            query.exec(tr).then(function(docs){
+              expect(docs).to.have.length(1)
+              expect(docs[0]).to.have.property('name', 'Josh');
+              expect(docs[0]).to.have.property('balance', 30);
+              done();
+            }, function(err){
+              done(err);
+              console.log(err);
+            });
+  
+            tr.commit();
+          });
+        });
+      });
+      
+      it("Greater than", function(done){
+        var keyPath = [root, 'people'];
+        
+        var tr = fowl.transaction();
+
+        //
+        // Add many documents
+        //
+        tr.create(keyPath, {name: "Jim", balance: 30});
+        tr.create(keyPath, {name: "Jim", balance: 45});
+
+        for(var i=0; i< 50; i++){
+          tr.create(keyPath, { 
+            _id: i, 
+            name: "John", 
+            lastname: "Smith", 
+            balance: Math.round(Math.random()*100)
+          });
+        }
+
+        tr.commit().then(function(){
+          var time = Date.now();
+          var tr = fowl.transaction();
+            
+          var query = fowl.query(keyPath);
+
+          query
+            .gt('balance', 30)
+            .eql('name', 'Jim')
+            
+          query.exec(tr).then(function(docs){
+            expect(docs).to.have.length(1)
+            expect(docs[0]).to.have.property('name', 'Jim');
+            expect(docs[0]).to.have.property('balance', 45);
+            done();
+          }, function(err){
+            done(err);
+            console.log(err);
+          });
+  
+          tr.commit();
+        });
+      });
+      
+      it("Greater or Equal than", function(done){
+        var keyPath = [root, 'people'];
+        
+        var tr = fowl.transaction();
+
+        //
+        // Add many documents
+        //
+        tr.create(keyPath, {name: "Joshua", balance: 30});
+        tr.create(keyPath, {name: "Joshua", balance: 45});
+
+        for(var i=0; i< 50; i++){
+          tr.create(keyPath, { 
+            _id: i, 
+            name: "John", 
+            lastname: "Smith", 
+            balance: Math.round(Math.random()*100)
+          });
+        }
+
+        tr.commit().then(function(){
+          var time = Date.now();
+          var tr = fowl.transaction();
+            
+          var query = fowl.query(keyPath);
+
+          query
+            .gte('balance', 30)
+            .eql('name', 'Joshua')
+            
+          query.exec(tr).then(function(docs){
+            expect(docs).to.have.length(2)
+            expect(docs[0]).to.have.property('name', 'Joshua');
+            expect(docs[0]).to.have.property('balance', 30);
+            expect(docs[1]).to.have.property('name', 'Joshua');
+            expect(docs[1]).to.have.property('balance', 45);
+            done();
+          }, function(err){
+            done(err);
+            console.log(err);
+          });
+  
+          tr.commit();
+        });
+      });
+      
+      it("Less than");
+      it("Less or equal than");
       it("Not equal ($ne)");
       it("Not in ($nin)");
     });
@@ -346,5 +525,4 @@ describe("Transactions", function(){
   })
   
 });
-
 
