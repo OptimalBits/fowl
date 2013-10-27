@@ -105,6 +105,18 @@ fields to index:
 fowl.addIndex('people',  ['name', 'balance']);
 ```
 
+It is possible to perform more advanced queries using the Query object:
+
+```
+var query = fowl.query('people');
+query
+  .eql('lastname', 'Andersson')
+  .gt('balance', 15)
+  .lte('balance', 45)
+  .exec(tr).then(function(results){
+    // results -> array of documents matching the query.
+  })
+```
 
 ## About atomicity
 
@@ -307,6 +319,58 @@ __Arguments__
 ```
 
 ---------------------------------------
+
+
+### addIndex(keyPath, fields)
+
+Adds an index for the given key path and fields. After calling this method,
+everytime the key paths with the given fields are updated, an index is also
+updated so that queries on such fields can be performed much faster.
+
+__Arguments__
+ 
+```javascript
+  keyPath {Array|String} base key path for the index.
+  fields {String|Array} A field or array of fields to index.
+  returns {Promise} A promise that resolves after the index has been added.
+```
+
+---------------------------------------
+### query(keyPath, fields, opts)
+
+Creates a query object that can be used to retrieve documents that matches
+the given criteria. The returned query object provides several operators
+to perform different kind of queries. The query object will use indexes to accelerate
+queries if possible. Note that the order of the operators can affect performance,
+it is always better to use indexed properties first.
+
+__Arguments__
+ 
+```javascript
+  keyPath {Array|String} base key path for the query.
+  fields {String|Array} A field or array of fields to return on the matched documents.
+  opts {Options} Available options are "limit", "skip" and "sort".
+  returns {Query} A query object with several operators to match the documents.
+```
+
+#### query##eql(property, value)
+Matches documents where the given property is equal to the given value.
+
+#### query##gt(property, value)
+Matches documents where the given property is greather than the given value.
+
+#### query##gte(property, value)
+Matches documents where the given property is greater or equal than the given value.
+
+#### query##lt(property, value)
+Matches documents where the given property is less than the given value.
+
+#### query##lte(property, value)
+Matches documents where the given property is less or equal than the given value.
+
+#### query##exec(transaction)
+Executes the query. Returns a promise that resolves to the result of the query.
+
 
 ##License 
 
