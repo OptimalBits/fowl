@@ -1,6 +1,6 @@
 #Fowl - NodeJS Document and Query Layer for FDB
 
-A NodeJS Layer for FoundationDB that provides documents and queries
+A NodeJS Layer for [FoundationDB](http://www.foundationdb.com) that provides documents and queries
 with similar capabilities to MongoDB but providing support for 
 multidocument transactions.
 
