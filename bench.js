@@ -2,7 +2,7 @@
 
 var Benchmark = require('benchmark');
 var fowl = require('./index');
-var when = require('when');
+var bluebird = require('bluebird');
 
 fowl.open();
 
@@ -79,7 +79,7 @@ function createObjects(data){
     ops.push(fowl.create('benchmarks', data));
   }
   
-  return when.all(ops)
+  return bluebird.all(ops)
 }
 
 function createObjectsOneTransaction(data){

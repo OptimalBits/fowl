@@ -13,7 +13,7 @@ properties following CRUD semantics.
 Fowl aims to be a low level document layer that can be used by other to provide
 higher level features such as schemas, models, validation, etc.
 
-All asynchronous operations return A+ compliant promises (provided by whenjs).
+All asynchronous operations return A+ compliant promises (provided by bluebirdjs).
 
 ##Contribute
 

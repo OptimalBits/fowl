@@ -37,13 +37,13 @@ describe("Transactions", function(){
       var tr = fowl.transaction();
 
       tr.create('animals', {name: 'fox', legs: 4}).then(function(foxId){
-        expect(foxId).to.be.a(String);
+        expect(foxId).to.be.a('string');
         tr.get(['animals', foxId]).then(function(fox){
-          expect(fox).to.be.an(Object);
+          expect(fox).to.be.an('object');
           expect(fox).to.have.property('name');
           expect(fox).to.have.property('legs');
-          expect(fox.name).to.be('fox')
-          expect(fox.legs).to.be(4)
+          expect(fox.name).to.be.eql('fox')
+          expect(fox.legs).to.be.eql(4)
         });
       });
     
@@ -175,15 +175,15 @@ describe("Transactions", function(){
       var tr = fowl.transaction();
     
       tr.create('animals', {name: 'tiger', legs: 4}).then(function(tigerId){
-        expect(foxId).to.be.a(String);
+        expect(tigerId).to.be.a('string');
       
         tr.put(['animals', tigerId], {legs: 3});
       
         tr.get(['animals', tigerId]).then(function(tiger){
           expect(tiger).to.have.property('name');
           expect(tiger).to.have.property('legs');
-          expect(tiger.name).to.be('fox')
-          expect(tiger.legs).to.be(4)
+          expect(tiger.name).to.be.eql('tiger')
+          expect(tiger.legs).to.be.eql(3)
         })
       });
     
@@ -231,7 +231,7 @@ describe("Transactions", function(){
         tr.remove([root, 'animals', docId]);
 
         tr.get([root, 'animals', docId]).then(function(doc){
-          expect(doc).not.to.be.ok();
+          expect(doc).to.be.a('undefined');
         })
       });
     
@@ -250,7 +250,7 @@ describe("Transactions", function(){
         tr.create([root, 'people'], { name: "Lisa", balance: 30});
   
         tr.find([root, 'people'], {name: "John"}, ['name']).then(function(result){
-          expect(result).to.be.an(Array);
+          expect(result).to.be.an('array');
         });
   
         tr.commit().then(function(){
