@@ -59,39 +59,44 @@ exports.rebuildIndex = function(keyPath, fields)
 }
 
 /**
-  Single operations when no transactions needed.
+  Single operations bluebird no transactions needed.
 */
 exports.create = function(keyPath, args){
   var tr = transaction();
   var res = tr.create(keyPath, args);
-  tr.commit();
-  return res;
+  return tr.commit().then(function(){
+    return res;
+  });
 }
-  
+
 exports.put = function(keyPath, args){
   var tr = transaction();
   var res = tr.put(keyPath, args);
-  tr.commit();
-  return res;
+  return tr.commit().then(function(){
+    return res;
+  });
 }
   
 exports.get = function(keyPath){
   var tr = transaction();
   var res = tr.get(keyPath);
-  tr.commit();
-  return res;
+  return tr.commit().then(function(){
+    return res;
+  });
 }
   
 exports.remove = function(keyPath){
   var tr = transaction();
   var res = tr.remove(keyPath);
-  return tr.commit();
+  return tr.commit().then(function(){
+    return res;
+  });
 }
 
 exports.find = function(keyPath, where, fields, options){
   var tr = transaction();
   var res = tr.find(keyPath, where, fields, options);
-  tr.commit();
-  return res;
+  return tr.commit().then(function(){
+    return res;
+  });
 }
-
