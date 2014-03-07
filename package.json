@@ -15,7 +15,7 @@
   "author": "Manuel Astudillo",
   "license": "BSD",
   "dependencies": {
-    "fdb": "~1.0.1",
+    "fdb": "^2.0.0",
     "when": "~2.4.0",
     "node-uuid": "~1.4.1",
     "bluebird": "~0.11.5-0"
