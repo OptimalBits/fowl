@@ -1,6 +1,6 @@
 "use strict";
 
-var fdb = require('fdb').apiVersion(100);
+var fdb = require('fdb').apiVersion(200);
 var _ = require('lodash');
 
 var indexes = require('./lib/indexes');
