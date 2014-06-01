@@ -12,7 +12,7 @@ fowl.open();
 
 describe("Queries", function(){
   
-  before(function(){
+  beforeEach(function(){
     return Promise.join(
       fowl.remove('__ind'),
       fowl.remove(root),
@@ -291,8 +291,92 @@ describe("Queries", function(){
       });
     });
     
-    it("Less than");
-    it("Less or equal than");
+    it("Less than", function(){      
+      var keyPath = [root, 'people'];
+      
+      var tr = fowl.transaction();
+
+      //
+      // Add many documents
+      //
+      tr.create(keyPath, {name: "Joshua", balance: 30});
+      tr.create(keyPath, {name: "Joshua", balance: 45});
+
+      for(var i=0; i< 50; i++){
+        tr.create(keyPath, { 
+          _id: i, 
+          name: "John", 
+          lastname: "Smith", 
+          balance: Math.round(Math.random()*100)
+        });
+      }
+
+      return tr.commit().then(function(){
+        var time = Date.now();
+        var tr = fowl.transaction();
+          
+        var query = fowl.query(keyPath);
+
+        query
+          .lt('balance', 45)
+          .eql('name', 'Joshua')
+          
+        var q = query.exec(tr);
+      
+        return tr.commit().then(function(){
+          return q.then(function(docs){
+            expect(docs).to.have.length(1)
+            expect(docs[0]).to.have.property('name', 'Joshua');
+            expect(docs[0]).to.have.property('balance', 30);
+          });
+        })
+      });
+    });
+    
+    it("Less or equal than", function(){      
+      var keyPath = [root, 'people'];
+      
+      var tr = fowl.transaction();
+
+      //
+      // Add many documents
+      //
+      tr.create(keyPath, {name: "Joshua", balance: 30});
+      tr.create(keyPath, {name: "Joshua", balance: 45});
+
+      for(var i=0; i< 50; i++){
+        tr.create(keyPath, { 
+          _id: i, 
+          name: "John", 
+          lastname: "Smith", 
+          balance: Math.round(Math.random()*100)
+        });
+      }
+
+      return tr.commit().then(function(){
+        var time = Date.now();
+        var tr = fowl.transaction();
+          
+        var query = fowl.query(keyPath);
+
+        query
+          .lte('balance', 45)
+          .eql('name', 'Joshua')
+          
+        var q = query.exec(tr);
+      
+        return tr.commit().then(function(){
+          return q.then(function(docs){
+            expect(docs).to.have.length(2)
+            expect(docs[0]).to.have.property('name', 'Joshua');
+            expect(docs[0]).to.have.property('balance', 30);
+            expect(docs[1]).to.have.property('name', 'Joshua');
+            expect(docs[1]).to.have.property('balance', 45);
+          });
+        })
+      });
+    });
+    
     it("Not equal ($ne)");
     it("Not in ($nin)");
   });
