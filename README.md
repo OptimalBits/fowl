@@ -10,7 +10,7 @@ server logic and helps avoiding difficult to solve race conditions.
 Fowl provides a low level API based on keypaths for describing documents and its
 properties following CRUD semantics.
 
-Fowl aims to be a low level document layer that can be used by other to provide
+Fowl aims to be a low level document layer that can be used by others to provide
 higher level features such as schemas, models, validation, etc.
 
 All asynchronous operations return A+ compliant promises (provided by bluebirdjs).
